@@ -64,28 +64,37 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addAfter(T element, T target) {
-
+        add(indexOf(target)+1, element);
     }
 
     @Override
     public void add(int index, T element) {
-
+        expandIfNecessary();
+        for (int i = rear; i > index; i--) { //"shift" loop
+            array[i] = array[i-1];
+        }
+        array[index] = element;
+        rear++;
+        modCount++;
     }
 
     @Override
     public T removeFirst() {
-        return null;
+        return remove(0);
     }
 
     @Override
     public T removeLast() {
-        return null;
+        return remove(rear-1);
     }
 
     @Override
     public T remove(T element) {
-        int index = indexOf(element); //TODO check if this line is valid
+        return remove(indexOf(element));
+    }
 
+    @Override
+    public T remove(int index) {
         if (index < 0 || index >= rear) {
             throw new IndexOutOfBoundsException();
         }
@@ -101,13 +110,11 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    public T remove(int index) {
-        return null;
-    }
-
-    @Override
     public void set(int index, T element) {
-
+        if (index < 0 || index >= (rear)) {
+            throw new IndexOutOfBoundsException();
+        }
+        array[index] = element;
     }
 
     @Override

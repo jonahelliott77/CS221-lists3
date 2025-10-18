@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
  * @author mvail, mhthomas, awinters, jelliott
  */
 @SuppressWarnings("deprecated")
-public class MVListTester {
+public class ListTester {
 	//possible lists that could be tested
 	private static enum ListToUse {
 		goodList, badList, arrayList, singleLinkedList, doubleLinkedList
@@ -66,14 +66,14 @@ public class MVListTester {
 	 */
 	public static void main(String[] args) {
 		// to avoid every method being static
-		MVListTester tester = new MVListTester(args);
+		ListTester tester = new ListTester(args);
 		tester.runTests();
 	}
 
 	/** tester constructor
 	 * @param args command line args
 	 */
-	public MVListTester(String[] args) {
+	public ListTester(String[] args) {
 		for (String arg : args) {
 			if (arg.equalsIgnoreCase("-a"))
 				printFailuresOnly = false;
@@ -183,13 +183,13 @@ public class MVListTester {
 		//2-element to changed 2-element via set()
         testTwoElementList(AB_set1C_AC, "AB_set1C_AC", LIST_AC, STRING_AC);
 
-
-
 		//3-element to 2-element
         testTwoElementList(ABC_remove2_AB, "ABC_remove2_AB", LIST_AB, STRING_AB);
 
 
 		//3-element to changed 3-element via set()
+
+
 		//Iterator concurrency tests
 		test_IterConcurrency();
 		if (SUPPORTS_LIST_ITERATOR) {
