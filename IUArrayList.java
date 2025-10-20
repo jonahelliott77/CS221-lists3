@@ -40,21 +40,12 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addToFront(T element) {
-        expandIfNecessary();
-        for (int i = rear; i > 0; i--) { //"shift" loop
-            array[i] = array[i-1];
-        }
-        array[0] = element;
-        rear++;
-        modCount++;
+        add(0, element);
     }
 
     @Override
     public void addToRear(T element) {
-        expandIfNecessary();
-        array[rear] = element;
-        rear++;
-        modCount++;
+        add(rear, element);
     }
 
     @Override
@@ -64,11 +55,17 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addAfter(T element, T target) {
+        if (!contains(target)) {
+            throw new NoSuchElementException();
+        }
         add(indexOf(target)+1, element);
     }
 
     @Override
     public void add(int index, T element) {
+        if (index < 0 || index > rear) {
+            throw new IndexOutOfBoundsException();
+        }
         expandIfNecessary();
         for (int i = rear; i > index; i--) { //"shift" loop
             array[i] = array[i-1];
@@ -80,16 +77,25 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeFirst() {
+        if (rear == 0) {
+            throw new NoSuchElementException();
+        }
         return remove(0);
     }
 
     @Override
     public T removeLast() {
+        if (rear == 0) {
+            throw new NoSuchElementException();
+        }
         return remove(rear-1);
     }
 
     @Override
     public T remove(T element) {
+        if (!contains(element)) {
+            throw new NoSuchElementException();
+        }
         return remove(indexOf(element));
     }
 

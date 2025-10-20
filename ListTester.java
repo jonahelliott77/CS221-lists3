@@ -186,8 +186,8 @@ public class ListTester {
 		//3-element to 2-element
         testTwoElementList(ABC_remove2_AB, "ABC_remove2_AB", LIST_AB, STRING_AB);
 
-
 		//3-element to changed 3-element via set()
+        testTwoElementList(ABC_removeB_AC, "ABC_removeB_AC", LIST_AC, STRING_AC);
 
 
 		//Iterator concurrency tests
@@ -398,6 +398,13 @@ public class ListTester {
         return list;
     }
     private Scenario<Integer> ABC_remove2_AB = () -> ABC_remove2_AB();
+
+    private IndexedUnsortedList<Integer> ABC_removeB_AC() {
+        IndexedUnsortedList<Integer> list = AB_addToRearC_ABC();
+        list.remove(ELEMENT_B);
+        return list;
+    }
+    private Scenario<Integer> ABC_removeB_AC = () -> ABC_removeB_AC();
 
 
 
