@@ -111,7 +111,8 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         }
         //array[rear-1] = null;
         rear--;
-        array[rear] = null; //clear the duplicate
+        array[rear] = null;
+        modCount++;//clear the duplicate
         return retVal;
     }
 
@@ -121,6 +122,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
             throw new IndexOutOfBoundsException();
         }
         array[index] = element;
+        modCount++;
     }
 
     @Override
@@ -202,7 +204,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    public ListIterator listIterator(int startingIndex) {
+    public ListIterator<T> listIterator(int startingIndex) {
         throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
     }
 
