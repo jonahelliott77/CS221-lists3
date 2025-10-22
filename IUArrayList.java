@@ -175,6 +175,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         return rear;
     }
 
+    @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("[");

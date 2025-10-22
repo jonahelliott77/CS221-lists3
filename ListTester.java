@@ -151,6 +151,9 @@ public class ListTester {
         String STRING_ABC = "ABC";
         Integer[] LIST_AC = {ELEMENT_A, ELEMENT_C};
         String STRING_AC = "AC";
+		Integer[] LIST_BC = {ELEMENT_B, ELEMENT_C};
+		String STRING_BC = "BC";
+
 
 		//newly constructed empty list
 		testEmptyList(newList, "newList");
@@ -164,6 +167,7 @@ public class ListTester {
 		testEmptyList(A_removeA_emptyList, "A_removeA_emptyList");
 		testEmptyList(A_removeFirst_emptyList, "A_removeFirst_emptyList");
 		testEmptyList(A_removeLast_emptyList, "A_removeLast_emptyList");
+		testEmptyList(A_IterRemoveA_empty, "A_IterRemoveA_empty");
 
 		//1-element to 2-element
 		testTwoElementList(A_addToFrontB_BA, "A_addToFrontB_BA", LIST_BA, STRING_BA);
@@ -175,6 +179,7 @@ public class ListTester {
 
 		//2-element to 1-element
 		testSingleElementList(AB_removeB_A, "AB_removeB_A", LIST_A, STRING_A);
+		testSingleElementList(AB_IterRemoveA_B, "AB_IterRemoveA_B", LIST_B, STRING_B);
 
 		//2-element to 3-element
         testThreeElementList(AB_addToFrontC_CAB, "AB_addToFrontC_CAB", LIST_CAB, STRING_CAB);
@@ -185,6 +190,7 @@ public class ListTester {
 
 		//3-element to 2-element
         testTwoElementList(ABC_remove2_AB, "ABC_remove2_AB", LIST_AB, STRING_AB);
+		testTwoElementList(ABC_IterRemoveA_BC, "ABC_IterRemoveA_BC", LIST_BC, STRING_BC);
 
 		//3-element to changed 3-element via set()
         testTwoElementList(ABC_removeB_AC, "ABC_removeB_AC", LIST_AC, STRING_AC);
@@ -392,6 +398,10 @@ public class ListTester {
     }
     private Scenario<Integer> AB_set1C_AC = () -> AB_set1C_AC();
 
+	/**
+	 * Scenario: [A,B, C] -> remove(2) -> [A,B]
+	 * @return [A, B] after remove(2)
+	 */
     private IndexedUnsortedList<Integer> ABC_remove2_AB() {
         IndexedUnsortedList<Integer> list = AB_addToRearC_ABC();
         list.remove(2);
@@ -399,6 +409,10 @@ public class ListTester {
     }
     private Scenario<Integer> ABC_remove2_AB = () -> ABC_remove2_AB();
 
+	/**
+	 * Scenario: [A,B, C] -> remove(B) -> [A,C]
+	 * @return [A, C] after remove(B)
+	 */
     private IndexedUnsortedList<Integer> ABC_removeB_AC() {
         IndexedUnsortedList<Integer> list = AB_addToRearC_ABC();
         list.remove(ELEMENT_B);
@@ -406,6 +420,45 @@ public class ListTester {
     }
     private Scenario<Integer> ABC_removeB_AC = () -> ABC_removeB_AC();
 
+	/* Iterator scenarios */
+	/**
+	 * [A] -> iterator remove() after next() returns A -> []
+	 * @return empty list after iterRemove()
+	 */
+	private IndexedUnsortedList<Integer> A_IterRemoveA_empty() {
+		IndexedUnsortedList<Integer> list = emptyList_addToRearA_A();
+		Iterator<Integer> it = list.iterator();
+		it.next();
+		it.remove();
+		return list;
+	}
+	private Scenario<Integer> A_IterRemoveA_empty = () -> A_IterRemoveA_empty();
+
+	/**
+	 * [A, B] -> iterator remove() after next() returns A -> [B]
+	 * @return [B] after iterRemove()
+	 */
+	private IndexedUnsortedList<Integer> AB_IterRemoveA_B() {
+		IndexedUnsortedList<Integer> list = A_addToRearB_AB();
+		Iterator<Integer> it = list.iterator();
+		it.next();
+		it.remove();
+		return list;
+	}
+	private Scenario<Integer> AB_IterRemoveA_B = () -> AB_IterRemoveA_B();
+
+	/**
+	 * [A] -> iterator remove() after next() returns A -> [B, C]
+	 * @return [B, C] after iterRemove()
+	 */
+	private IndexedUnsortedList<Integer> ABC_IterRemoveA_BC() {
+		IndexedUnsortedList<Integer> list = AB_addToRearC_ABC();
+		Iterator<Integer> it = list.iterator();
+		it.next();
+		it.remove();
+		return list;
+	}
+	private Scenario<Integer> ABC_IterRemoveA_BC = () -> ABC_IterRemoveA_BC();
 
 
 
