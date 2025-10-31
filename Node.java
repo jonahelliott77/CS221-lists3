@@ -1,7 +1,6 @@
 /**
  * Linkable node for linear data structures
  * @author jonah elliott
- * @param <T>
  */
 
 public class Node<T> {
@@ -18,13 +17,30 @@ public class Node<T> {
     }
 
     /**
-     * Initialize a Node with the given element and next Node.
+     * Initialize a Node with the given element and next Node
+     *
      * @param element
      * @param nextNode
      */
     public Node(T element, Node<T> nextNode) {
         this.element = element;
         this.nextNode = nextNode;
+    }
+
+    public Node<T> getNextNode() {
+        return nextNode;
+    }
+
+    public void setNextNode(Node<T> nextNode) {
+        this.nextNode = nextNode;
+    }
+
+    public T getElement() {
+        return element;
+    }
+
+    public void setElement(T element) {
+        this.element = element;
     }
 
     //TODO Add getters and setters and stop using intellij

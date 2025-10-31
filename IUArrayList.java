@@ -111,8 +111,8 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         }
         //array[rear-1] = null;
         rear--;
-        array[rear] = null;
-        modCount++;//clear the duplicate
+        array[rear] = null; //clear the duplicate
+        modCount++;
         return retVal;
     }
 
