@@ -55,12 +55,43 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addAfter(T element, T target) {
-
+        Node<T> curNode = head;
+        while (curNode != null && !curNode.getElement().equals(target)) {
+            curNode = curNode.getNextNode();
+        }
+        if (curNode == null) {
+            throw new NoSuchElementException();
+        }
+        Node<T> newNode = new Node<T>(element);
+        newNode.setNextNode(curNode.getNextNode());
+        curNode.setNextNode(newNode);
+        if (curNode == tail) {
+            tail = newNode;
+        }
+        size++;
+        modCount++;
     }
 
     @Override
     public void add(int index, T element) {
-
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index == 0) {
+            addToFront(element);
+        } else if (index == size) {
+            addToRear(element);
+        } else {
+            Node<T> curNode = head;
+            for (int i = 0; i < index; i++) {
+                curNode = curNode.getNextNode();
+            }
+            Node<T> newNode = new Node<>(element);
+            newNode.setNextNode(curNode.getNextNode());
+            curNode.setNextNode(newNode);
+            size++;
+            modCount++;
+        }
     }
 
     @Override
@@ -85,12 +116,12 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         T retVal = tail.getElement();
         if (size > 0) {
-            Node<T> currentNode = head;
+            Node<T> curNode = head;
             for (int i = 0; i < size-2; i++) { //iterates n-2 times
-                currentNode = currentNode.getNextNode();
+                curNode = curNode.getNextNode();
             }
-            tail = currentNode;
-            currentNode.setNextNode(null);
+            tail = curNode;
+            curNode.setNextNode(null);
         } else {
             head = tail = null;
         }
@@ -164,7 +195,14 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<T> curNode = head;
+        for (int i = 0; i < index; i++) {
+            curNode = curNode.getNextNode();
+        }
+        return curNode.getNextNode().getElement();
     }
 
     @Override
