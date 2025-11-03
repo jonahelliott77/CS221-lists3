@@ -23,6 +23,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         size = 0;
         modCount = 0;
     }
+
     @Override
     public void addToFront(T element) {
         Node<T> newNode = new Node<T>(element);
@@ -174,6 +175,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
         //beginning of a list?
 
+
         //end of a list?
 
         //only element?
@@ -185,12 +187,19 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(int index) {
-        return null;
+        return null; //TODO
     }
 
     @Override
     public void set(int index, T element) {
-
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<T> curNode = head;
+        for (int i = 0; i < index; i++) {
+            curNode = curNode.getNextNode();
+        }
+        curNode.setElement(element);
     }
 
     @Override
@@ -207,32 +216,56 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public int indexOf(T element) {
-        return 0;
+//        if (head == null) {
+//            return -1;
+//        }
+        Node<T> curNode = head;
+        int index = 0;
+//        while (!curNode.getElement().equals(element) && tail != null) {
+//            curNode = curNode.getNextNode();
+//            index++;
+//        }
+        while (curNode != null && !curNode.getElement().equals(element)) {
+            curNode = curNode.getNextNode();
+            index++;
+        }
+        if (curNode == null) {
+            return -1;
+        }
+        return index;
     }
 
     @Override
     public T first() {
-        return null;
+        return head.getElement();
     }
 
     @Override
     public T last() {
-        return null;
+        return tail.getElement();
     }
 
     @Override
     public boolean contains(T target) {
-        return false;
+//        Node<T> curNode = head;
+//        while (!curNode.getElement().equals(target) && tail != null) {
+//            curNode = curNode.getNextNode();
+//        }
+//        if (tail == null) {
+//            return false;
+//        }
+//        return true;
+        return indexOf(target) > -1;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
