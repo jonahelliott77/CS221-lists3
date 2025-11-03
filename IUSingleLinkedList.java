@@ -164,6 +164,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
             if (curNode == tail) {
                 tail = curNode;
             }
+
             //"general case" - middle of a long list is the most common location
             curNode.setNextNode(curNode.getNextNode().getNextNode());
 
@@ -187,7 +188,19 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(int index) {
-        return null; //TODO
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<T> curNode = head;
+        for (int i = 0; i < index - 1; i++) {
+            curNode = curNode.getNextNode();
+        }
+        if (curNode.getNextNode() == null) {
+            throw new IndexOutOfBoundsException();
+        }
+        T retVal = curNode.getNextNode().getElement();
+        curNode.setNextNode(curNode.getNextNode().getNextNode());
+        return retVal;
     }
 
     @Override
@@ -237,11 +250,17 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T first() {
+        if (head == null) {
+            throw new NoSuchElementException();
+        }
         return head.getElement();
     }
 
     @Override
     public T last() {
+        if (tail == null) {
+            throw new NoSuchElementException();
+        }
         return tail.getElement();
     }
 
