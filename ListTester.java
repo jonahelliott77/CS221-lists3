@@ -20,7 +20,7 @@ public class ListTester {
 		goodList, badList, arrayList, singleLinkedList, doubleLinkedList
 	};
 	// TODO: THIS IS WHERE YOU CHOOSE WHICH LIST TO TEST
-	private final static ListToUse LIST_TO_USE = ListToUse.singleLinkedList;
+	private final static ListToUse LIST_TO_USE = ListToUse.goodList;
 
 	// possible results expected in tests
 	private enum Result {
@@ -153,6 +153,8 @@ public class ListTester {
         String STRING_AC = "AC";
 		Integer[] LIST_BC = {ELEMENT_B, ELEMENT_C};
 		String STRING_BC = "BC";
+        Integer[] LIST_ACB = {ELEMENT_A, ELEMENT_C, ELEMENT_B};
+        String STRING_ACB = "ACB";
 
 
 		//newly constructed empty list
@@ -195,8 +197,8 @@ public class ListTester {
 		//2-element to 3-element
         testThreeElementList(AB_addToFrontC_CAB, "AB_addToFrontC_CAB", LIST_CAB, STRING_CAB);
         testThreeElementList(AB_addToRearC_ABC, "AB_addToRearC_ABC", LIST_ABC, STRING_ABC);
-        // [A,B] -> addAfter(C,A) -> [A,C,B]
-        // 20) [A,B] -> addAfter(C,B) -> [A,B,C]
+        testThreeElementList(AB_addAfterCA_ACB, "AB_addAfterCA_ACB", LIST_ACB, STRING_ACB);
+        testThreeElementList(AB_addAfterCB_ABC, "AB_addAfterCB_ABC", LIST_ABC, STRING_ABC);
 //        21) [A,B] -> add(C) -> [A,B,C]
 //        22) [A,B] -> add(0,C) -> [C,A,B]
 //        23) [A,B] -> add(1,C) -> [A,C,B]
@@ -512,8 +514,6 @@ public class ListTester {
     private Scenario<Integer> AB_remove1_A = () -> AB_remove1_A();
 
 
-
-
     /* Two-element to three-element*/
 
     /**
@@ -539,6 +539,77 @@ public class ListTester {
     private Scenario<Integer> AB_addToRearC_ABC = () -> AB_addToRearC_ABC();
 
     /**
+     * Scenario: [A,B] -> addAfter(C, A) -> [A, C, B]
+     * @return [A, B, C] after addAfter(C, A)
+     */
+    private IndexedUnsortedList<Integer> AB_addAfterCA_ACB() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.addAfter(ELEMENT_C, ELEMENT_A);
+        return list;
+    }
+    private Scenario<Integer> AB_addAfterCA_ACB = () -> AB_addAfterCA_ACB();
+
+    /**
+     * Scenario: [A,B] -> addAfter(C, B) -> [A,B,C]
+     * @return [A, B, C] after addAfter(C, B)
+     */
+    private IndexedUnsortedList<Integer> AB_addAfterCB_ABC() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.addAfter(ELEMENT_C, ELEMENT_B);
+        return list;
+    }
+    private Scenario<Integer> AB_addAfterCB_ABC = () -> AB_addAfterCB_ABC();
+
+    /**
+     * Scenario: [A,B] -> add(C) -> [A,B,C]
+     * @return [A, B, C] after add(C)
+     */
+    private IndexedUnsortedList<Integer> AB_addC_ABC() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.add(ELEMENT_C);
+        return list;
+    }
+    private Scenario<Integer> AB_addC_ABC = () -> AB_addC_ABC();
+
+    /**
+     * Scenario: [A,B] -> add(0, C) -> [C, A, B]
+     * @return [C, A, B] after add(0, C)
+     */
+    private IndexedUnsortedList<Integer> AB_add0C_CAB() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.add(0, ELEMENT_C);
+        return list;
+    }
+    private Scenario<Integer> AB_add0C_CAB = () -> AB_add0C_CAB();
+
+    /**
+     * Scenario: [A,B] -> add(1, C) -> [A, C, B]
+     * @return [A, C, B] after add(1, C)
+     */
+    private IndexedUnsortedList<Integer> AB_add1C_ACB() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.add(1, ELEMENT_C);
+        return list;
+    }
+    private Scenario<Integer> AB_add1C_ACB = () -> AB_add1C_ACB();
+
+    /**
+     * Scenario: [A,B] -> add(2, C) -> [A,B,C]
+     * @return [A, B, C] after add(2, C)
+     */
+    private IndexedUnsortedList<Integer> AB_add2C_ABC() {
+        IndexedUnsortedList<Integer> list = A_addAfterBA_AB();
+        list.add(2, ELEMENT_C);
+        return list;
+    }
+    private Scenario<Integer> AB_add2C_ABC = () -> AB_add2C_ABC();
+
+
+
+
+    /* 2-element to changed 2-element via set */
+
+    /**
      * Scenario: [A,B] -> set(1,C) -> [A,C]
      * @return [A, C] after set(1, C)
      */
@@ -549,8 +620,10 @@ public class ListTester {
     }
     private Scenario<Integer> AB_set1C_AC = () -> AB_set1C_AC();
 
+    /* 3-element to 2*/
+
 	/**
-	 * Scenario: [A,B, C] -> remove(2) -> [A,B]
+	 * Scenario: [A, B, C] -> remove(2) -> [A,B]
 	 * @return [A, B] after remove(2)
 	 */
     private IndexedUnsortedList<Integer> ABC_remove2_AB() {
