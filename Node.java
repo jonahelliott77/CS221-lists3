@@ -5,6 +5,7 @@
 
 public class Node<T> {
     private Node<T> nextNode;
+    private Node<T> prevNode;
     private T element;
 
     /**
@@ -14,18 +15,18 @@ public class Node<T> {
     public Node(T element) {
         this.element = element;
         nextNode = null;
+        prevNode = null;
     }
 
-    /**
-     * Initialize a Node with the given element and next Node
-     *
-     * @param element
-     * @param nextNode
-     */
-    public Node(T element, Node<T> nextNode) {
-        this.element = element;
-        this.nextNode = nextNode;
-    }
+//    /**
+//     * Initialize a Node with the given element and next Node
+//     * @param element
+//     * @param nextNode
+//     */
+//    public Node(T element, Node<T> nextNode) {
+//        this.element = element;
+//        this.nextNode = nextNode;
+//    }
 
     public Node<T> getNextNode() {
         return nextNode;
@@ -33,6 +34,14 @@ public class Node<T> {
 
     public void setNextNode(Node<T> nextNode) {
         this.nextNode = nextNode;
+    }
+
+    public Node<T> getPrevNode() {
+        return prevNode;
+    }
+
+    public void setPrevNode(Node<T> nextNode) {
+        this.prevNode = nextNode;
     }
 
     public T getElement() {
