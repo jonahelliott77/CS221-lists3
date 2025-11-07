@@ -20,7 +20,7 @@ public class ListTester {
 		goodList, badList, arrayList, singleLinkedList, doubleLinkedList
 	};
 	// TODO: THIS IS WHERE YOU CHOOSE WHICH LIST TO TEST
-	private final static ListToUse LIST_TO_USE = ListToUse.doubleLinkedList;
+	private final static ListToUse LIST_TO_USE = ListToUse.singleLinkedList;
 
 	// possible results expected in tests
 	private enum Result {
@@ -204,7 +204,7 @@ public class ListTester {
         testThreeElementList(AB_addAfterCB_ABC, "AB_addAfterCB_ABC", LIST_ABC, STRING_ABC);
 		testThreeElementList(AB_addC_ABC, "AB_addC_ABC", LIST_ABC, STRING_ABC);
 		testThreeElementList(AB_add0C_CAB, "AB_addAfterCB_CAB", LIST_CAB, STRING_CAB);
-		testThreeElementList(AB_add1C_ACB, "AB_addAfterCB_ACB", LIST_ACB, STRING_ACB);
+		testThreeElementList(AB_add1C_ACB, "AB_add1C_ACB", LIST_ACB, STRING_ACB);
 		testThreeElementList(AB_add2C_ABC, "AB_add2C_ABC", LIST_ABC, STRING_ABC);
 
 		//2-element to changed 2-element via set()
@@ -249,21 +249,21 @@ public class ListTester {
 	private IndexedUnsortedList<Integer> newList() {
 		IndexedUnsortedList<Integer> listToUse;
 		switch (LIST_TO_USE) {
-		case goodList:
-			listToUse = new GoodList<Integer>();
-			break;
-		case badList:
-			listToUse = new BadList<Integer>();
-			break;
-		case arrayList:
-			listToUse = new IUArrayList<Integer>();
-			break;
+//		case goodList:
+//			listToUse = new GoodList<Integer>();
+//			break;
+//		case badList:
+//			listToUse = new BadList<Integer>();
+//			break;
+//		case arrayList:
+//			listToUse = new IUArrayList<Integer>();
+//			break;
 		case singleLinkedList:
 			listToUse = new IUSingleLinkedList<Integer>();
 			break;
-		case doubleLinkedList:
-			listToUse = new IUDoubleLinkedList<Integer>();
-			break;
+//		case doubleLinkedList:
+//			listToUse = new IUDoubleLinkedList<Integer>();
+//			break;
 		default:
 			listToUse = null;
 		}
@@ -605,8 +605,6 @@ public class ListTester {
         return list;
     }
     private Scenario<Integer> AB_add2C_ABC = () -> AB_add2C_ABC();
-
-
 
 
     /* 2-element to changed 2-element via set */
