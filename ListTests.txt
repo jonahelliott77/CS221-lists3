@@ -78,20 +78,20 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
   Tests:
 40) [A,B,C] -> remove(2) -> [A,B]
   Tests:
-41) [A,B,C] -> set(0,D) -> [D,B,C] I?
-42) [A,B,C] -> set(1,D) -> [A,D,C] I?
-43) [A,B,C] -> set(2,D) -> [A,B,D] I?
+41) [A,B,C] -> set(0,D) -> [D,B,C]
+42) [A,B,C] -> set(1,D) -> [A,D,C]
+43) [A,B,C] -> set(2,D) -> [A,B,D]
 
 including Iterator remove() method, add the following:
 44) [A] -> iterator remove() after next() returns A -> []
 45) [A,B] -> iterator remove() after next() returns A -> [B]
 46) [A,B] -> iterator remove() after next() returns B -> [A]
 47) [A,B,C] -> iterator remove() after next() returns A -> [B,C]
-48) [A,B,C] -> iterator remove() after next() returns B -> [A,C] I
-49) [A,B,C] -> iterator remove() after next() returns C -> [A,B] I
+48) [A,B,C] -> iterator remove() after next() returns B -> [A,C]
+49) [A,B,C] -> iterator remove() after next() returns C -> [A,B]
 
 including ListIterator with remove(), add(), and set() methods:
-50-55) same as Iterator remove() after next() scenarios above
+50-55) same as Iterator remove() after next() scenarios above - Implemented
 56) [A] -> iterator remove() after previous() returns A -> []
 57) [A,B] -> iterator remove() after previous() returns A -> [B]
 58) [A,B] -> iterator remove() after previous() returns B -> [A]

@@ -1,3 +1,4 @@
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -23,103 +24,198 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addToFront(T element) {
-        Node<T> newNode = new Node<T>(element);
-        newNode.setNextNode(head);
-        if (tail == null) {
-            tail = newNode;
-        } else {
-            head.setPrevNode(newNode);
-        }
-        head = newNode;
-        size++;
-        modCount++;
+//        Node<T> newNode = new Node<T>(element);
+//        newNode.setNextNode(head);
+//        if (tail == null) { // adding to empty list
+//            tail = newNode;
+//        } else {
+//            head.setPrevNode(newNode);
+//        }
+//        head = newNode;
+//        size++;
+//        modCount++;
+        ListIterator<T> lit = listIterator();
+        lit.add(element);
     }
 
     @Override
     public void addToRear(T element) {
-
+//        Node<T> newNode = new Node<T>(element);
+//        newNode.setPrevNode(tail);
+//        if (head == null) {
+//            head = newNode;
+//        } else {
+//            head.setNextNode(newNode);
+//        }
+//        head = newNode;
+//        size++;
+//        modCount++;
+        //CRITICAL that indexed listIterator starts at the best end
+        ListIterator<T> lit = listIterator(size);
+        lit.add(element);
     }
 
     @Override
     public void add(T element) {
-
+        addToRear(element);
     }
 
     @Override
     public void addAfter(T element, T target) {
-
+        ListIterator<T> lit = listIterator();
+        boolean foundIt = false;
+        while (lit.hasNext()) {
+            if (lit.next().equals(target)) {
+                lit.add(element);
+                foundIt = true;
+            } //else, nothing - just needed to keep moving
+        }
+        if (!foundIt) {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
     public void add(int index, T element) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
-        Node<T> newNode = new Node<T>(element);
-//        if (index == 0) {
-////            addToFront(element);
+//        if (index < 0 || index > size) {
+//            throw new IndexOutOfBoundsException();
+//        }
+//        Node<T> newNode = new Node<T>(element);
+////        if (index == 0) {
+//////            addToFront(element);
+////            newNode.setNextNode(head);
+////            if (head != null) {
+////                head.setPrevNode(newNode);
+////            } else {
+////                tail = newNode;
+////            }
+////            head = newNode;
+////        }
+//        if (isEmpty()) {
+//            head = tail = newNode;
+//        } else if (index == 0) {
 //            newNode.setNextNode(head);
-//            if (head != null) {
-//                head.setPrevNode(newNode);
+//            head.setPrevNode(newNode);
+//            head = newNode;
+//        } else {
+//            Node<T> curNode = head;
+//            for (int i = 0; i < index - 1; i++) {
+//                curNode = curNode.getNextNode();
+//            }
+//            newNode.setPrevNode(curNode);
+//            newNode.setNextNode(curNode.getNextNode());
+//            curNode.setNextNode(newNode);
+//            if (newNode.getNextNode() != null) { //if index != size or curNode != tail
+//                newNode.getNextNode().setPrevNode(newNode);
 //            } else {
 //                tail = newNode;
 //            }
-//            head = newNode;
+////        else if (index == size) {
+////            addToRear(element);
+////        } else {
+////            Node<T> curNode = head;
+////            for (int i = 0; i < index; i++) {
+////                curNode = curNode.getNextNode();
+////            }
+////            Node<T> newNode = new Node<T>(element);
+////            curNode.getNextNode().setPrevNode(newNode);
+////            newNode.setNextNode(curNode.getNextNode());
+////            newNode.setPrevNode(curNode);
+////            curNode.setNextNode(newNode);
+//            size++;
+//            modCount++;
 //        }
-        if (isEmpty()) {
-            head = tail = newNode;
-        } else if (index == 0) {
-            newNode.setNextNode(head);
-            head.setPrevNode(newNode);
-            head = newNode;
-        } else {
-            Node<T> curNode = head;
-            for (int i = 0; i < index - 1; i++) {
-                curNode = curNode.getNextNode();
-            }
-            newNode.setPrevNode(curNode);
-            newNode.setNextNode(curNode.getNextNode());
-            curNode.setNextNode(newNode);
-            if (newNode.getNextNode() != null) { //if index != size or curNode != tail
-                newNode.getNextNode().setPrevNode(newNode);
-            } else {
-                tail = newNode;
-            }
-//        else if (index == size) {
-//            addToRear(element);
-//        } else {
-//            Node<T> curNode = head;
-//            for (int i = 0; i < index; i++) {
-//                curNode = curNode.getNextNode();
-//            }
-//            Node<T> newNode = new Node<T>(element); //TODO this is not working
-//            curNode.getNextNode().setPrevNode(newNode);
-//            newNode.setNextNode(curNode.getNextNode());
-//            newNode.setPrevNode(curNode);
-//            curNode.setNextNode(newNode);
-            size++;
-            modCount++;
-        }
+        ListIterator<T> lit = listIterator(index);
+        lit.add(element);
     }
 
     @Override
     public T removeFirst() {
-        return null;
+//        if (isEmpty()) {
+//            throw new NoSuchElementException();
+//        }
+//        Node<T> firstNode = head;
+//        head = head.getNextNode();
+//        head.setPrevNode(null);
+//        firstNode.setNextNode(null);
+//        if (head == null) {
+//            tail = null;
+//        }
+//        size--;
+//        modCount++;
+//        return firstNode.getElement();
+        ListIterator<T> lit = listIterator();
+        if (!lit.hasNext()) {
+            throw new NoSuchElementException();
+        }
+        T retVal = lit.next();
+        lit.remove();
+        return retVal;
     }
 
     @Override
     public T removeLast() {
-        return null;
+//        if (isEmpty()) {
+//            throw new NoSuchElementException();
+//        }
+//        T retVal = tail.getElement();
+//        tail = tail.getPrevNode();
+//        if (size == 1) { //or if tail == null
+//            head = null; //removed only element
+//        } else {
+//            tail.setNextNode(null);
+//        }
+//        size--;
+//        modCount++;
+//        return retVal;
+        ListIterator<T> lit = listIterator(size);
+        if (!lit.hasPrevious()) {
+            throw new NoSuchElementException();
+        }
+        T retVal = lit.previous();
+        lit.remove();
+        return retVal;
     }
 
     @Override
     public T remove(T element) {
-        return null;
+//        ListIterator<T> lit = listIterator(); //Use method similar to addAfter
+//        while (lit.hasNext()) {
+//
+//        }
+        ListIterator<T> lit = listIterator();
+        T retVal;
+        boolean foundIt = false;
+        if (head != null) {
+            retVal = head.getElement();
+        } else {
+            throw new NoSuchElementException();
+        }
+        while (lit.hasNext()) {
+            retVal = lit.next();
+            if (retVal.equals(element)) {
+                lit.remove();
+                foundIt = true;
+            } //else, nothing - just needed to keep moving
+        }
+        if (!foundIt) {
+            throw new NoSuchElementException();
+        }
+        return retVal;
     }
 
     @Override
     public T remove(int index) {
-        return null;
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        ListIterator<T> lit = listIterator(index);
+        if (!lit.hasNext()) {
+            throw new IndexOutOfBoundsException();
+        }
+        T retVal = lit.next();
+        lit.remove();
+        return retVal;
     }
 
     @Override
@@ -129,14 +225,19 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T get(int index) { //Single-linked impl. can be improved from n/2 to n/4 avg
-        if (index < 0 || index > size) {
+//        if (index < 0 || index > size) {
+//            throw new IndexOutOfBoundsException();
+//        }
+//        Node<T> curNode = head;
+//        for (int i = 0; i < index; i++) {
+//            curNode = curNode.getNextNode();
+//        }
+//        return curNode.getNextNode().getElement();
+        if (index == size) { //only index not caught by ListIterator's constructor
             throw new IndexOutOfBoundsException();
         }
-        Node<T> curNode = head;
-        for (int i = 0; i < index; i++) {
-            curNode = curNode.getNextNode();
-        }
-        return curNode.getNextNode().getElement();
+        ListIterator<T> lit = listIterator(index);
+        return lit.next();
     }
 
     @Override
@@ -144,25 +245,34 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 //        if (head == null) {
 //            return -1;
 //        }
-        Node<T> curNode = head;
-        int index = 0;
-//        while (!curNode.getElement().equals(element) && tail != null) {
+//        Node<T> curNode = head;
+//        int index = 0;
+////        while (!curNode.getElement().equals(element) && tail != null) {
+////            curNode = curNode.getNextNode();
+////            index++;
+////        }
+//        while (curNode != null && !curNode.getElement().equals(element)) {
 //            curNode = curNode.getNextNode();
 //            index++;
 //        }
-        while (curNode != null && !curNode.getElement().equals(element)) {
-            curNode = curNode.getNextNode();
-            index++;
-        }
-        if (curNode == null) {
-            return -1;
+//        if (curNode == null) {
+//            return -1;
+//        }
+        int index = -1;
+        int currentIndex = 0;
+        ListIterator<T> lit = listIterator();
+        while (index < 0 && lit.hasNext()) {
+            if (lit.next().equals(element)) {
+                index = currentIndex;
+            }
+            currentIndex++;
         }
         return index;
     }
 
     @Override
     public T first() {
-        if (head == null) {
+        if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return head.getElement();
@@ -170,7 +280,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T last() {
-        if (tail == null) {
+        if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return tail.getElement();
@@ -201,18 +311,17 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public Iterator<T> iterator() {
-        //return new IUSingleLinkedList.SLLIterator();
-        return null;
+        return new DLLIterator();
     }
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new UnsupportedOperationException("Unimplemented method 'listIterator()'");
+        return new DLLIterator();
     }
 
     @Override
     public ListIterator<T> listIterator(int startingIndex) {
-        throw new UnsupportedOperationException("Unimplemented method 'listIterator()'");
+        return new DLLIterator(startingIndex);
     }
 
     public String toString() {
@@ -231,5 +340,171 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         str.append("]");
         return str.toString();
+    }
+
+
+    /* ListIterator for IUDoubleLinkedList */
+    private class DLLIterator implements ListIterator<T> {
+        private Node<T> nextNode;
+        private int nextIndex;
+        private Node<T> lastReturnedNode;
+        private int iterModCount;
+
+        /** Initialize iterator before first element */
+        public DLLIterator() {
+            nextNode = head;
+            nextIndex = 0;
+            iterModCount = modCount;
+            lastReturnedNode = null;
+        }
+
+        /** Initialize iterator before the specified index
+         * @param startingIndex index that would be next after constructor
+         * */
+        public DLLIterator(int startingIndex) {
+            if (startingIndex < 0 || startingIndex > size) {
+                throw new IndexOutOfBoundsException();
+            }
+            if (startingIndex > size/2) {
+                if (startingIndex == size) {
+                    nextNode = null;
+                } else {
+                    nextNode = tail;
+                    for (int i = size-1; i > startingIndex; i--) {
+                        nextNode = nextNode.getPrevNode();
+                    }
+                }
+            } else {
+                nextNode = head;
+                nextIndex = 0;
+                for (int i = 0; i < startingIndex; i++) {
+                    nextNode = nextNode.getNextNode();
+                    nextIndex++;
+                }
+            }
+            iterModCount = modCount;
+            lastReturnedNode = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            return nextNode != null;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T retVal = nextNode.getElement();
+            lastReturnedNode = nextNode;
+            nextNode = nextNode.getNextNode();
+            nextIndex++;
+            return retVal;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            //nextNode.getPrevious() != null or nextIndex != 0 or nextNode != head
+            return nextNode != head;
+        }
+
+        @Override
+        public T previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            nextNode = nextNode.getPrevNode();
+            lastReturnedNode = nextNode;
+            nextIndex--;
+            return nextNode.getElement();
+        }
+
+        @Override
+        public int nextIndex() {
+            return nextIndex;
+        }
+
+        @Override
+        public int previousIndex() {
+            return nextIndex - 1;
+        }
+
+        @Override
+        public void remove() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (lastReturnedNode == null) {
+                throw new IllegalStateException();
+            }
+            //now I can remove lastReturnedNode
+            if (lastReturnedNode == tail) {
+                tail = lastReturnedNode.getPrevNode();
+            } else {
+                lastReturnedNode.getNextNode().setPrevNode(lastReturnedNode.getPrevNode());
+            }
+            if (lastReturnedNode == head) {
+                head = lastReturnedNode.getNextNode();
+            } else {
+                lastReturnedNode.getPrevNode().setNextNode(lastReturnedNode.getNextNode());
+            }
+            if (lastReturnedNode == nextNode) { //last move was previous and just removed nextNode
+                nextNode = nextNode.getNextNode();
+            } else { //last move was next
+                nextIndex--;
+            }
+            lastReturnedNode = null;
+        }
+
+        @Override
+        public void set(T t) {
+            //You can call set as many times as you want, do not clear lastReturnedNode
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (lastReturnedNode == null) {
+                throw new IllegalStateException();
+            } else {
+                lastReturnedNode.setElement(t);
+            }
+        }
+
+        @Override
+        public void add(T t) {
+            //As long as no ConcurrentModificationException, you can call add at any time
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            Node<T> newNode = new Node<T>(t);
+
+            //Check if the left of the iterator is null
+            if (nextIndex > 0) {
+                newNode.setPrevNode(nextNode.getPrevNode());
+                nextNode.getPrevNode().setNextNode(newNode);
+            } else {
+                head = newNode;
+            }
+
+            //Check if the right of the iterator is null
+            if (nextNode != null) {
+                newNode.setNextNode(nextNode);
+                nextNode.setPrevNode(newNode);
+            } else if (nextIndex > 0) {
+                tail = newNode;
+            }
+
+            lastReturnedNode = null;
+            nextIndex++;
+            size++;
+            modCount++;
+            iterModCount++;
+        }
     }
 }
