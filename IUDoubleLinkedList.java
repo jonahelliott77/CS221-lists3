@@ -206,7 +206,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(int index) {
-        if (index < 0 || index > size) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
         ListIterator<T> lit = listIterator(index);
@@ -220,7 +220,13 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void set(int index, T element) {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            ListIterator<T> lit = listIterator(index);
+            lit.next();
+            lit.set(element);
+        }
     }
 
     @Override
@@ -368,10 +374,13 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (startingIndex > size/2) {
                 if (startingIndex == size) {
                     nextNode = null;
+                    //nextIndex = size;
                 } else {
                     nextNode = tail;
+                    //nextIndex = size;
                     for (int i = size-1; i > startingIndex; i--) {
                         nextNode = nextNode.getPrevNode();
+                        //nextIndex--;
                     }
                 }
             } else {
@@ -379,9 +388,11 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 nextIndex = 0;
                 for (int i = 0; i < startingIndex; i++) {
                     nextNode = nextNode.getNextNode();
-                    nextIndex++;
+                    //nextIndex++;
                 }
             }
+
+            nextIndex = startingIndex;
             iterModCount = modCount;
             lastReturnedNode = null;
         }
@@ -420,7 +431,11 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
-            nextNode = nextNode.getPrevNode();
+            if (nextNode == null) { //We must be past tail
+                nextNode = tail;
+            } else { //A node is in front of us
+                nextNode = nextNode.getPrevNode();
+            }
             lastReturnedNode = nextNode;
             nextIndex--;
             return nextNode.getElement();
@@ -461,6 +476,9 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 nextIndex--;
             }
             lastReturnedNode = null;
+            size--;
+            modCount++;
+            iterModCount++;
         }
 
         @Override
@@ -474,6 +492,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             } else {
                 lastReturnedNode.setElement(t);
             }
+            modCount++;
+            iterModCount++;
         }
 
         @Override
@@ -484,22 +504,46 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             }
             Node<T> newNode = new Node<T>(t);
 
-            //Check if the left of the iterator is null
-            if (nextIndex > 0) {
-                newNode.setPrevNode(nextNode.getPrevNode());
-                nextNode.getPrevNode().setNextNode(newNode);
-            } else {
-                head = newNode;
+//            //Check whether iterator is at the beginning or end of the list
+//            if (nextIndex > 0 && nextNode != null) {
+//                newNode.setPrevNode(nextNode.getPrevNode());
+//                nextNode.getPrevNode().setNextNode(newNode);
+//            } else if (nextNode == null) {
+//                tail.setNextNode(newNode);
+//                newNode.setPrevNode(tail);
+//                tail = newNode;
+//            } else {
+//                head = newNode;
+//            }
+//            //Check if the right of the iterator is null
+//            if (nextNode != null) {
+//                newNode.setNextNode(nextNode);
+//                nextNode.setPrevNode(newNode);
+//            } else {
+//                tail = newNode;
+//            }
+            if (nextNode == null) { //There is nothing in front of us
+                if (nextIndex == 0) { //The list is empty
+                    head = tail = newNode;
+                } else { //We must be past tail
+                    newNode.setPrevNode(tail);
+                    tail.setNextNode(newNode);
+                    tail = newNode;
+                }
             }
-
-            //Check if the right of the iterator is null
-            if (nextNode != null) {
-                newNode.setNextNode(nextNode);
-                nextNode.setPrevNode(newNode);
-            } else if (nextIndex > 0) {
-                tail = newNode;
+            else { //There must be an element in front of us
+                if (nextIndex == 0) { //We are at the beginning
+                    newNode.setNextNode(nextNode);
+                    nextNode.setPrevNode(newNode);
+                    head = newNode;
+                }
+                else { //We are in between two nodes
+                    newNode.setPrevNode(nextNode.getPrevNode());
+                    newNode.getPrevNode().setNextNode(newNode);
+                    newNode.setNextNode(nextNode);
+                    nextNode.setPrevNode(newNode);
+                }
             }
-
             lastReturnedNode = null;
             nextIndex++;
             size++;

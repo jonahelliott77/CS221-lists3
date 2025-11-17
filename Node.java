@@ -40,8 +40,8 @@ public class Node<T> {
         return prevNode;
     }
 
-    public void setPrevNode(Node<T> nextNode) {
-        this.prevNode = nextNode;
+    public void setPrevNode(Node<T> prevNode) {
+        this.prevNode = prevNode;
     }
 
     public T getElement() {
@@ -51,7 +51,5 @@ public class Node<T> {
     public void setElement(T element) {
         this.element = element;
     }
-
-    //TODO Add getters and setters and stop using intellij
 
 }
