@@ -65,7 +65,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         ListIterator<T> lit = listIterator();
         boolean foundIt = false;
         while (lit.hasNext()) {
-            if (lit.next().equals(target)) {
+            if (lit.next().equals(target)) { //if we found it, then add after that node
                 lit.add(element);
                 foundIt = true;
             } //else, nothing - just needed to keep moving
@@ -191,14 +191,14 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         } else {
             throw new NoSuchElementException();
         }
-        while (lit.hasNext()) {
+        while (lit.hasNext() && !foundIt) { //continue until it is found or end is reached
             retVal = lit.next();
-            if (retVal.equals(element)) {
+            if (retVal.equals(element)) { //Remove when iterator has moved past the element
                 lit.remove();
                 foundIt = true;
-            } //else, nothing - just needed to keep moving
+            }
         }
-        if (!foundIt) {
+        if (!foundIt) { //If we never found it
             throw new NoSuchElementException();
         }
         return retVal;
@@ -210,10 +210,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             throw new IndexOutOfBoundsException();
         }
         ListIterator<T> lit = listIterator(index);
-        if (!lit.hasNext()) {
-            throw new IndexOutOfBoundsException();
-        }
-        T retVal = lit.next();
+        T retVal = lit.next(); //store node at index and avoid an illegal remove call
         lit.remove();
         return retVal;
     }
@@ -224,7 +221,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             throw new IndexOutOfBoundsException();
         } else {
             ListIterator<T> lit = listIterator(index);
-            lit.next();
+            lit.next(); //so that last returned node is stored and the set call is legal
             lit.set(element);
         }
     }
@@ -399,14 +396,13 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
         @Override
         public boolean hasNext() {
-            if (iterModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
+            CoModCheck();
             return nextNode != null;
         }
 
         @Override
         public T next() {
+            CoModCheck();
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -419,15 +415,14 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
         @Override
         public boolean hasPrevious() {
-            if (iterModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
+            CoModCheck();
             //nextNode.getPrevious() != null or nextIndex != 0 or nextNode != head
             return nextNode != head;
         }
 
         @Override
         public T previous() {
+            CoModCheck();
             if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
@@ -443,19 +438,19 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
         @Override
         public int nextIndex() {
+            CoModCheck();
             return nextIndex;
         }
 
         @Override
         public int previousIndex() {
+            CoModCheck();
             return nextIndex - 1;
         }
 
         @Override
         public void remove() {
-            if (iterModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
+            CoModCheck();
             if (lastReturnedNode == null) {
                 throw new IllegalStateException();
             }
@@ -484,9 +479,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         @Override
         public void set(T t) {
             //You can call set as many times as you want, do not clear lastReturnedNode
-            if (iterModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
+            CoModCheck();
             if (lastReturnedNode == null) {
                 throw new IllegalStateException();
             } else {
@@ -499,29 +492,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         @Override
         public void add(T t) {
             //As long as no ConcurrentModificationException, you can call add at any time
-            if (iterModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
+            CoModCheck();
             Node<T> newNode = new Node<T>(t);
-
-//            //Check whether iterator is at the beginning or end of the list
-//            if (nextIndex > 0 && nextNode != null) {
-//                newNode.setPrevNode(nextNode.getPrevNode());
-//                nextNode.getPrevNode().setNextNode(newNode);
-//            } else if (nextNode == null) {
-//                tail.setNextNode(newNode);
-//                newNode.setPrevNode(tail);
-//                tail = newNode;
-//            } else {
-//                head = newNode;
-//            }
-//            //Check if the right of the iterator is null
-//            if (nextNode != null) {
-//                newNode.setNextNode(nextNode);
-//                nextNode.setPrevNode(newNode);
-//            } else {
-//                tail = newNode;
-//            }
             if (nextNode == null) { //There is nothing in front of us
                 if (nextIndex == 0) { //The list is empty
                     head = tail = newNode;
@@ -549,6 +521,18 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             size++;
             modCount++;
             iterModCount++;
+        }
+
+        /* Helper methods */
+
+        /**
+         * Checks to see if iterModCount and modCount are equal.
+         * If they aren't, then throw ConcurrentModificationException
+         */
+        private void CoModCheck() throws ConcurrentModificationException {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
         }
     }
 }
